@@ -1,13 +1,25 @@
 package br.com.rnery.domain;
 
+import br.com.rnery.annotations.SQLColumn;
+import br.com.rnery.annotations.SQLTable;
+
+@SQLTable("tb_client")
 public class Client extends Persistent {
+    @SQLColumn(SQLColumn = "id", setJavaName = "setId")
     private Long id;
+    @SQLColumn(SQLColumn= "name", setJavaName = "setName")
     private String name;
+    @SQLColumn(SQLColumn= "cpf", setJavaName = "setCpf")
     private Long cpf;
+    @SQLColumn(SQLColumn= "tel", setJavaName = "setTel")
     private Long tel;
+    @SQLColumn(SQLColumn= "address", setJavaName = "setAdress")
     private String address;
-    private String address_num;
+    @SQLColumn(SQLColumn= "address_num", setJavaName = "setAdressNum")
+    private String addressNum;
+    @SQLColumn(SQLColumn= "city", setJavaName = "setCity")
     private String city;
+    @SQLColumn(SQLColumn= "state", setJavaName = "setState")
     private String state;
 
     @Override
@@ -50,12 +62,12 @@ public class Client extends Persistent {
         this.address = address;
     }
 
-    public String getAddress_num() {
-        return address_num;
+    public String getAddressNum() {
+        return addressNum;
     }
 
-    public void setAddress_num(String address_num) {
-        this.address_num = address_num;
+    public void setAddressNum(String addressNum) {
+        this.addressNum = addressNum;
     }
 
     public String getCity() {

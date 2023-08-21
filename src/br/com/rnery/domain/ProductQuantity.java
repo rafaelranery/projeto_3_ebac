@@ -1,12 +1,20 @@
 package br.com.rnery.domain;
 
-public class ProductQuantity extends Persistent {
+import br.com.rnery.annotations.SQLColumn;
+import br.com.rnery.annotations.SQLTable;
 
+@SQLTable("tb_product_quantity")
+public class ProductQuantity extends Persistent {
+    @SQLColumn(SQLColumn= "id", setJavaName = "setId")
     private Long id;
+    @SQLColumn(SQLColumn= "id_product", setJavaName = "setProduct")
     private Product product;
+    @SQLColumn(SQLColumn= "id_sale", setJavaName = "setSale")
     private Sale sale;
+    @SQLColumn(SQLColumn= "quantity", setJavaName = "setQuantity")
     private Integer quantity;
-    private Double total_value;
+    @SQLColumn(SQLColumn= "total_value", setJavaName = "setTotalValue")
+    private Double totalValue;
 
     @Override
     public Long getId() {
@@ -42,11 +50,11 @@ public class ProductQuantity extends Persistent {
         this.quantity = quantity;
     }
 
-    public Double getTotal_value() {
-        return total_value;
+    public Double getTotalValue() {
+        return totalValue;
     }
 
-    public void setTotal_value(Double total_value) {
-        this.total_value = total_value;
+    public void setTotal_value(Double totalValue) {
+        this.totalValue = totalValue;
     }
 }

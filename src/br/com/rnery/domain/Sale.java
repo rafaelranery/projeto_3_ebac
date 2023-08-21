@@ -1,14 +1,24 @@
 package br.com.rnery.domain;
 
+import br.com.rnery.annotations.SQLColumn;
+import br.com.rnery.annotations.SQLTable;
+
 import java.sql.Date;
 
+@SQLTable("tb_sale")
 public class Sale extends Persistent {
+    @SQLColumn(SQLColumn= "id", setJavaName = "setId")
     private Long id;
+    @SQLColumn(SQLColumn= "code", setJavaName = "setCode")
     private String code;
+    @SQLColumn(SQLColumn= "id_client", setJavaName = "setClient")
     private Client client;
-    private Double total_value;
-    private Date sale_date;
-    private String sale_status;
+    @SQLColumn(SQLColumn= "total_value", setJavaName = "setTotalValue")
+    private Double totalValue;
+    @SQLColumn(SQLColumn= "sale_date", setJavaName = "setSaleDate")
+    private Date saleDate;
+    @SQLColumn(SQLColumn= "sale_status", setJavaName = "setSaleStatus")
+    private String saleStatus;
 
     @Override
     public Long getId() {
@@ -36,27 +46,27 @@ public class Sale extends Persistent {
         this.client = client;
     }
 
-    public Double getTotal_value() {
-        return total_value;
+    public Double getTotalValue() {
+        return totalValue;
     }
 
-    public void setTotal_value(Double total_value) {
-        this.total_value = total_value;
+    public void setTotalValue(Double totalValue) {
+        this.totalValue = totalValue;
     }
 
-    public Date getSale_date() {
-        return sale_date;
+    public Date getSaleDate() {
+        return saleDate;
     }
 
-    public void setSale_date(Date sale_date) {
-        this.sale_date = sale_date;
+    public void setSaleDate(Date saleDate) {
+        this.saleDate = saleDate;
     }
 
-    public String getSale_status() {
-        return sale_status;
+    public String getSaleStatus() {
+        return saleStatus;
     }
 
-    public void setSale_status(String sale_status) {
-        this.sale_status = sale_status;
+    public void setSaleStatus(String saleStatus) {
+        this.saleStatus = saleStatus;
     }
 }

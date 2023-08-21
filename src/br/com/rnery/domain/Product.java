@@ -1,10 +1,17 @@
 package br.com.rnery.domain;
 
-public class Product extends Persistent {
+import br.com.rnery.annotations.SQLColumn;
+import br.com.rnery.annotations.SQLTable;
 
+@SQLTable("tb_product")
+public class Product extends Persistent {
+    @SQLColumn(SQLColumn= "id", setJavaName = "setId")
     private Long id;
+    @SQLColumn(SQLColumn= "name", setJavaName = "setName")
     private String name;
+    @SQLColumn(SQLColumn= "description", setJavaName = "setDescription")
     private String description;
+    @SQLColumn(SQLColumn= "price", setJavaName = "setPrice")
     private Double price;
 
     @Override
