@@ -3,10 +3,16 @@ package br.com.rnery.dao;
 import br.com.rnery.dao.generic.GenericDAO;
 import br.com.rnery.domain.Product;
 
+import java.lang.reflect.InvocationTargetException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class ProductDAO extends GenericDAO<Product> {
+
+    public ProductDAO() {
+        this.ref = Product.class;
+    }
+
     @Override
     protected String getUpdateSQL() {
         StringBuilder st = new StringBuilder();

@@ -3,10 +3,16 @@ package br.com.rnery.dao;
 import br.com.rnery.dao.generic.GenericDAO;
 import br.com.rnery.domain.Client;
 
+import java.lang.reflect.InvocationTargetException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class ClientDAO extends GenericDAO<Client> {
+
+    public ClientDAO() {
+        this.ref = Client.class;
+    }
+
     @Override
     protected void addInsertParams(PreparedStatement stm, Client entity) throws SQLException {
         stm.setString(1, entity.getName());

@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.postgresql.util.PSQLException;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Set;
 
@@ -16,7 +17,7 @@ public class ProductTest {
     Product p;
 
     @Before
-    public void init() {
+    public void init() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         dao = new ProductDAO();
         p = new Product();
         p.setName("Product Name 1");
@@ -59,7 +60,7 @@ public class ProductTest {
     public void getOneTest() throws Exception {
         dao.register(p);
 
-        Product pDB = dao.getOne(p.getCode(), p);
+        Product pDB = dao.getOne(p.getCode());
         Assert.assertNotNull(pDB);
         Assert.assertEquals(p.getCode(), pDB.getCode());
         Assert.assertEquals(p.getName(), pDB.getName());

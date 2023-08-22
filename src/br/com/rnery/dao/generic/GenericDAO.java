@@ -18,7 +18,7 @@ import java.util.Set;
 public abstract class GenericDAO<T extends Persistent> implements IGenericDAO<T> {
     // TODO
     // utilizar ref para não precisar passar a entity em métodos de busca e delete.
-    protected T ref;
+    protected Class<? extends Persistent> ref;
 
     @Override
     public Integer register(T entity) throws Exception {
@@ -59,19 +59,19 @@ public abstract class GenericDAO<T extends Persistent> implements IGenericDAO<T>
 
 
     @Override
-    public T getOne(Long key, T entity) throws Exception {
+    public T getOne(Long key) throws Exception {
         Connection c = null;
         PreparedStatement stm = null;
         ResultSet rs = null;
         try {
             c = ConnectionFactory.getConnetion();
-            String SQL_CMD = getSelectOneSQL(entity);
+            String SQL_CMD = getSelectOneSQL(this.ref.getClass());
             stm = c.prepareStatement(SQL_CMD);
-            addSelectOneParams(stm, entity);
+            addSelectOneParams(stm, key);
             rs = stm.executeQuery();
 
             if(rs.next()) {
-                Class<? extends Persistent> eClass = entity.getClass();
+                Class<? extends Persistent> eClass = this.ref;
                 Constructor<? extends Persistent> constructor = eClass.getConstructor();
                 Field[] cols = eClass.getDeclaredFields();
                 Method[] methods = eClass.getMethods();
@@ -215,11 +215,11 @@ public abstract class GenericDAO<T extends Persistent> implements IGenericDAO<T>
         return st.toString();
     }
 
-    private String getSelectOneSQL(T entity) {
+    private String getSelectOneSQL(Class entity) {
         StringBuilder st = new StringBuilder();
         String uniqueCol = null;
-        String tableName = entity.getClass().getAnnotation(SQLTable.class).value();
-        Field[] cols = entity.getClass().getDeclaredFields();
+        String tableName = this.ref.getAnnotation(SQLTable.class).value();
+        Field[] cols = this.ref.getDeclaredFields();
 
         for (Field f : cols) {
             if(f.isAnnotationPresent(SQLUniqueCol.class)) {
@@ -258,20 +258,8 @@ public abstract class GenericDAO<T extends Persistent> implements IGenericDAO<T>
         }
     };
 
-    private void addSelectOneParams(PreparedStatement stm, T entity) throws InvocationTargetException, IllegalAccessException, SQLException {
-        Method searchMethod = null;
-        Method[] methods = entity.getClass().getDeclaredMethods();
-
-        for (Method m : methods) {
-            if(m.isAnnotationPresent(SQLUnique.class)) {
-                searchMethod = m;
-                break;
-            }
-        }
-
-        if (searchMethod != null) {
-            stm.setLong(1, (Long) searchMethod.invoke(entity));
-        }
+    private void addSelectOneParams(PreparedStatement stm, Long key) throws InvocationTargetException, IllegalAccessException, SQLException {
+        stm.setLong(1, key);
     }
 
 

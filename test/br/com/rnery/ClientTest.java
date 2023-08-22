@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.postgresql.util.PSQLException;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -17,7 +18,7 @@ public class ClientTest {
     private Client c;
 
     @Before
-    public void init() {
+    public void init() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         dao = new ClientDAO();
         c = new Client();
         c.setName("Rafael");
@@ -34,7 +35,7 @@ public class ClientTest {
         Integer countRegister = dao.register(c);
         Assert.assertEquals(1, (int) countRegister);
 
-        Client cDB = dao.getOne(c.getCpf(), c);
+        Client cDB = dao.getOne(c.getCpf());
         Assert.assertNotNull(cDB);
         Assert.assertEquals(c.getCpf(), cDB.getCpf());
 
@@ -56,11 +57,13 @@ public class ClientTest {
         c.setTel(333222111L);
         c.setAddressNum(395L);
 
-        Integer countRegister2 = dao.register(c);
-        Assert.assertEquals(1, (int) countRegister2);
-
-        Integer countDelete = dao.delete(c);
-        Assert.assertEquals(1, (int) countDelete);
+        try {
+            Integer countRegister2 = dao.register(c);
+            Assert.assertEquals(1, (int) countRegister2);
+        } finally {
+            Integer countDelete = dao.delete(c);
+            Assert.assertEquals(1, (int) countDelete);
+        }
     }
 
     @Test
@@ -68,7 +71,7 @@ public class ClientTest {
         Integer countRegister = dao.register(c);
         Assert.assertEquals(1, (int) countRegister);
 
-        Client cDB = dao.getOne(c.getCpf(), c);
+        Client cDB = dao.getOne(c.getCpf());
         Assert.assertNotNull(cDB);
         Assert.assertEquals(c.getCpf(), cDB.getCpf());
 
@@ -120,7 +123,7 @@ public class ClientTest {
         Integer countRegister = dao.register(c);
         Assert.assertEquals(1, (int) countRegister);
 
-        Client cDB = dao.getOne(c.getCpf(), c);
+        Client cDB = dao.getOne(c.getCpf());
         Assert.assertNotNull(cDB);
 
         cDB.setName("Rafael Updated");
@@ -134,7 +137,7 @@ public class ClientTest {
         Integer countUpdated = dao.update(cDB);
         Assert.assertEquals(1, (int) countUpdated);
 
-        Client cDBUpdated = dao.getOne(cDB.getCpf(), cDB);
+        Client cDBUpdated = dao.getOne(cDB.getCpf());
         Assert.assertNotNull(cDBUpdated);
 
         Assert.assertEquals(cDB.getCpf(), cDBUpdated.getCpf());
