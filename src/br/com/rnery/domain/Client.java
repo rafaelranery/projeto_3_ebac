@@ -1,22 +1,23 @@
 package br.com.rnery.domain;
 
-import br.com.rnery.annotations.SQLColumn;
-import br.com.rnery.annotations.SQLTable;
+import br.com.rnery.annotations.*;
 
 @SQLTable("tb_client")
+@SQLInsertCMD({"(NAME, CPF, TEL, ADDRESS, ADDRESS_NUM, CITY, STATE)", "(?, ?, ?, ?, ?, ?, ?)"})
 public class Client extends Persistent {
     @SQLColumn(SQLColumn = "id", setJavaName = "setId")
     private Long id;
     @SQLColumn(SQLColumn= "name", setJavaName = "setName")
     private String name;
+    @SQLUniqueCol
     @SQLColumn(SQLColumn= "cpf", setJavaName = "setCpf")
     private Long cpf;
     @SQLColumn(SQLColumn= "tel", setJavaName = "setTel")
     private Long tel;
-    @SQLColumn(SQLColumn= "address", setJavaName = "setAdress")
+    @SQLColumn(SQLColumn= "address", setJavaName = "setAddress")
     private String address;
-    @SQLColumn(SQLColumn= "address_num", setJavaName = "setAdressNum")
-    private String addressNum;
+    @SQLColumn(SQLColumn= "address_num", setJavaName = "setAddressNum")
+    private Long addressNum;
     @SQLColumn(SQLColumn= "city", setJavaName = "setCity")
     private String city;
     @SQLColumn(SQLColumn= "state", setJavaName = "setState")
@@ -38,6 +39,8 @@ public class Client extends Persistent {
         this.name = name;
     }
 
+
+    @SQLUnique()
     public Long getCpf() {
         return cpf;
     }
@@ -62,11 +65,11 @@ public class Client extends Persistent {
         this.address = address;
     }
 
-    public String getAddressNum() {
+    public Long getAddressNum() {
         return addressNum;
     }
 
-    public void setAddressNum(String addressNum) {
+    public void setAddressNum(Long addressNum) {
         this.addressNum = addressNum;
     }
 
