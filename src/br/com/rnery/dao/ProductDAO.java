@@ -17,7 +17,7 @@ public class ProductDAO extends GenericDAO<Product> {
     protected String getUpdateSQL() {
         StringBuilder st = new StringBuilder();
         st.append("UPDATE tb_product ");
-        st.append("SET NAME = ?, DESCRIPTION ?, PRICE = ?, CODE = ? ");
+        st.append("SET NAME = ?, DESCRIPTION = ?, PRICE = ?, CODE = ? ");
         st.append("WHERE ID = ?;");
 
         return st.toString();

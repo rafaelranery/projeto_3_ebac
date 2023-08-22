@@ -65,7 +65,7 @@ public abstract class GenericDAO<T extends Persistent> implements IGenericDAO<T>
         ResultSet rs = null;
         try {
             c = ConnectionFactory.getConnetion();
-            String SQL_CMD = getSelectOneSQL(this.ref.getClass());
+            String SQL_CMD = getSelectOneSQL(this.ref);
             stm = c.prepareStatement(SQL_CMD);
             addSelectOneParams(stm, key);
             rs = stm.executeQuery();
@@ -96,6 +96,8 @@ public abstract class GenericDAO<T extends Persistent> implements IGenericDAO<T>
                             setMethod.invoke(entityDB, rs.getLong(colName));
                         } else if (parameterTypes[0] == String.class) {
                             setMethod.invoke(entityDB, rs.getString(colName));
+                        } else if (parameterTypes[0] == Double.class) {
+                            setMethod.invoke(entityDB, rs.getDouble(colName));
                         }
                     }
                 }
@@ -110,7 +112,7 @@ public abstract class GenericDAO<T extends Persistent> implements IGenericDAO<T>
     }
 
     @Override
-    public Set<T> getAll(T entity) throws Exception {
+    public Set<T> getAll() throws Exception {
         Connection c = null;
         PreparedStatement stm = null;
         ResultSet rs = null;
@@ -118,12 +120,12 @@ public abstract class GenericDAO<T extends Persistent> implements IGenericDAO<T>
 
         try {
             c = ConnectionFactory.getConnetion();
-            String SQL_CDM = "SELECT * FROM " + entity.getClass().getAnnotation(SQLTable.class).value();
+            String SQL_CDM = "SELECT * FROM " + this.ref.getAnnotation(SQLTable.class).value();
             stm = c.prepareStatement(SQL_CDM);
             rs = stm.executeQuery();
 
             while (rs.next()) {
-                Class<? extends Persistent> eClass = entity.getClass();
+                Class<? extends Persistent> eClass = this.ref;
                 Constructor<? extends Persistent> constructor = eClass.getConstructor();
                 Field[] cols = eClass.getDeclaredFields();
                 Method[] methods = eClass.getMethods();

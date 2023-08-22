@@ -107,7 +107,7 @@ public class ClientTest {
         }
         Assert.assertEquals(3, (int) countRegister);
 
-        Set<Client> setDB = dao.getAll(new Client());
+        Set<Client> setDB = dao.getAll();
         Assert.assertEquals(3, setDB.size());
 
         Integer countDelete = 0;

@@ -1,6 +1,7 @@
 package br.com.rnery;
 
 import br.com.rnery.dao.ProductDAO;
+import br.com.rnery.domain.Client;
 import br.com.rnery.domain.Product;
 import org.junit.After;
 import org.junit.Assert;
@@ -70,12 +71,64 @@ public class ProductTest {
     }
 
     @Test
-    public void getAllTest() {
+    public void getAllTest() throws Exception {
+        Product p2 = new Product();
+        p2.setName("Product Name 2");
+        p2.setDescription("Product 2 Description");
+        p2.setPrice(2.5D);
+        p2.setCode(1234L);
 
+        Product p3 = new Product();
+        p3.setName("Product Name 3");
+        p3.setDescription("Product 3 Description");
+        p3.setPrice(2.5D);
+        p3.setCode(1235L);
+
+        List<Product> listToRegister = List.of(p, p2, p3);
+        Integer countRegister = 0;
+        for (Product product : listToRegister) {
+            Integer res = dao.register(product);
+            countRegister += res;
+        }
+        Assert.assertEquals(3, (int) countRegister);
+
+        Set<Product> setDB = dao.getAll();
+        Assert.assertEquals(3, setDB.size());
+
+        Integer countDelete = 0;
+        for (Product pDB : setDB) {
+            Integer res = dao.delete(pDB);
+            countDelete += res;
+        }
+        Assert.assertEquals(3, (int) countDelete);
     }
 
     @Test
-    public void updateTest() {
+    public void updateTest() throws Exception {
+        Integer countRegister = dao.register(p);
+        Assert.assertEquals(1, (int) countRegister);
 
+        Product pDB = dao.getOne(p.getCode());
+        Assert.assertNotNull(pDB);
+
+        pDB.setName("Product Updated");
+        pDB.setDescription("Product description updated");
+        pDB.setCode(1234567L);
+        pDB.setPrice(5.5D);
+
+        Integer countUpdated = dao.update(pDB);
+        Assert.assertEquals(1, (int) countUpdated);
+
+        Product pDBUpdated = dao.getOne(pDB.getCode());
+        Assert.assertNotNull(pDBUpdated);
+
+        Assert.assertEquals(pDB.getCode(), pDBUpdated.getCode());
+        Assert.assertEquals(pDB.getName(), pDBUpdated.getName());
+        Assert.assertEquals(pDB.getDescription(), pDBUpdated.getDescription());
+        Assert.assertEquals(pDB.getPrice(), pDBUpdated.getPrice());
+        Assert.assertEquals(pDB.getId(), pDBUpdated.getId());
+
+        Integer countDelete = dao.delete(pDBUpdated);
+        Assert.assertEquals(1, (int) countDelete);
     }
 }
