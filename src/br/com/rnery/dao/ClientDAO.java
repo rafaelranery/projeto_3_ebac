@@ -19,7 +19,7 @@ public class ClientDAO extends GenericDAO<Client> {
     }
 
     @Override
-    protected String getUpdateSQL(Client entity) {
+    protected String getUpdateSQL() {
         StringBuilder st = new StringBuilder();
 
         st.append("UPDATE tb_client ");

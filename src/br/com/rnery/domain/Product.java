@@ -1,9 +1,9 @@
 package br.com.rnery.domain;
 
-import br.com.rnery.annotations.SQLColumn;
-import br.com.rnery.annotations.SQLTable;
+import br.com.rnery.annotations.*;
 
 @SQLTable("tb_product")
+@SQLInsertCMD({"(NAME, DESCRIPTION, PRICE, CODE)", "(?, ?, ? , ?)"})
 public class Product extends Persistent {
     @SQLColumn(SQLColumn= "id", setJavaName = "setId")
     private Long id;
@@ -13,6 +13,19 @@ public class Product extends Persistent {
     private String description;
     @SQLColumn(SQLColumn= "price", setJavaName = "setPrice")
     private Double price;
+    @SQLUniqueCol
+    @SQLColumn(SQLColumn = "code", setJavaName = "setCode")
+    private Long code;
+
+
+    @SQLUnique()
+    public Long getCode() {
+        return code;
+    }
+
+    public void setCode(Long code) {
+        this.code = code;
+    }
 
     @Override
     public Long getId() {

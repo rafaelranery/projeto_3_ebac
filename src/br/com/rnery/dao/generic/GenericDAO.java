@@ -45,7 +45,7 @@ public abstract class GenericDAO<T extends Persistent> implements IGenericDAO<T>
 
         try {
             c = ConnectionFactory.getConnetion();
-            String SQL_CMD = getUpdateSQL(entity);
+            String SQL_CMD = getUpdateSQL();
             stm = c.prepareStatement(SQL_CMD);
             addUpdateParams(stm, entity);
             return stm.executeUpdate();
@@ -237,7 +237,7 @@ public abstract class GenericDAO<T extends Persistent> implements IGenericDAO<T>
         return st.toString();
     }
 
-    protected abstract String getUpdateSQL(T entity);
+    protected abstract String getUpdateSQL();
 
     protected abstract void addInsertParams(PreparedStatement stm, T entity) throws SQLException;
     protected abstract void addUpdateParams(PreparedStatement stm, T entity) throws SQLException;
