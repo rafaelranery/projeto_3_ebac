@@ -12,9 +12,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.Set;
 
 public abstract class GenericDAO<T extends Persistent> implements IGenericDAO<T> {
+    // TODO
+    // utilizar ref para não precisar passar a entity em métodos de busca e delete.
+    protected T ref;
+
     @Override
     public Integer register(T entity) throws Exception {
         Connection connection = null;
@@ -35,8 +40,23 @@ public abstract class GenericDAO<T extends Persistent> implements IGenericDAO<T>
 
     @Override
     public Integer update(T entity) throws Exception {
-        return null;
+        Connection c = null;
+        PreparedStatement stm = null;
+
+        try {
+            c = ConnectionFactory.getConnetion();
+            String SQL_CMD = getUpdateSQL(entity);
+            stm = c.prepareStatement(SQL_CMD);
+            addUpdateParams(stm, entity);
+            return stm.executeUpdate();
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            closeConnections(c, stm);
+        }
     }
+
+
 
     @Override
     public T getOne(Long key, T entity) throws Exception {
@@ -91,7 +111,54 @@ public abstract class GenericDAO<T extends Persistent> implements IGenericDAO<T>
 
     @Override
     public Set<T> getAll(T entity) throws Exception {
-        return null;
+        Connection c = null;
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+        Set<T> setDB = new HashSet<>();
+
+        try {
+            c = ConnectionFactory.getConnetion();
+            String SQL_CDM = "SELECT * FROM " + entity.getClass().getAnnotation(SQLTable.class).value();
+            stm = c.prepareStatement(SQL_CDM);
+            rs = stm.executeQuery();
+
+            while (rs.next()) {
+                Class<? extends Persistent> eClass = entity.getClass();
+                Constructor<? extends Persistent> constructor = eClass.getConstructor();
+                Field[] cols = eClass.getDeclaredFields();
+                Method[] methods = eClass.getMethods();
+                T entityDB = (T) constructor.newInstance();
+
+                for (Field f : cols) {
+                    if (f.isAnnotationPresent(SQLColumn.class)) {
+                        String colName = f.getAnnotation(SQLColumn.class).SQLColumn();
+                        String setMethodName = f.getAnnotation(SQLColumn.class).setJavaName();
+                        Method setMethod = null;
+                        Class<?>[] parameterTypes = null;
+
+                        for (Method m : methods) {
+                            if(m.getName().equals(setMethodName)) {
+                                setMethod = m;
+                                parameterTypes = setMethod.getParameterTypes();
+                                break;
+                            }
+                        }
+
+                        if (parameterTypes[0] == Long.class) {
+                            setMethod.invoke(entityDB, rs.getLong(colName));
+                        } else if (parameterTypes[0] == String.class) {
+                            setMethod.invoke(entityDB, rs.getString(colName));
+                        }
+                    }
+                }
+                setDB.add(entityDB);
+            }
+            return setDB;
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            closeConnections(c, stm, rs);
+        }
     }
 
     @Override
@@ -170,7 +237,10 @@ public abstract class GenericDAO<T extends Persistent> implements IGenericDAO<T>
         return st.toString();
     }
 
+    protected abstract String getUpdateSQL(T entity);
+
     protected abstract void addInsertParams(PreparedStatement stm, T entity) throws SQLException;
+    protected abstract void addUpdateParams(PreparedStatement stm, T entity) throws SQLException;
 
     protected void addDeleteParams(PreparedStatement stm, T entity ) throws SQLException, InvocationTargetException, IllegalAccessException {
         Method searchMethod = null;

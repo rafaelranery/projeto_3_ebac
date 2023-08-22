@@ -17,4 +17,27 @@ public class ClientDAO extends GenericDAO<Client> {
         stm.setString(6, entity.getCity());
         stm.setString(7, entity.getState());
     }
+
+    @Override
+    protected String getUpdateSQL(Client entity) {
+        StringBuilder st = new StringBuilder();
+
+        st.append("UPDATE tb_client ");
+        st.append("SET NAME = ?, CPF = ?, TEL = ?, ADDRESS = ?, ADDRESS_NUM = ?, CITY = ?, STATE = ? ");
+        st.append("WHERE ID = ?");
+
+        return st.toString();
+    }
+
+    @Override
+    protected void addUpdateParams(PreparedStatement stm, Client entity) throws SQLException {
+        stm.setString(1, entity.getName());
+        stm.setLong(2, entity.getCpf());
+        stm.setLong(3, entity.getTel());
+        stm.setString(4, entity.getAddress());
+        stm.setLong(5, entity.getAddressNum());
+        stm.setString(6, entity.getCity());
+        stm.setString(7, entity.getState());
+        stm.setLong(8, entity.getId());
+    }
 }
